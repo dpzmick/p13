@@ -30,8 +30,10 @@ def single_digit_carry_chance(incoming_carry=False):
 one_digit_carry = single_digit_carry_chance()
 one_digit_carry_with_prev_carry = single_digit_carry_chance(True)
 
-#print "Chance of carry without previous carry %f" % one_digit_carry
-#print "Chance of carry with previous carry %f" % one_digit_carry_with_prev_carry
+# these verify that we were right at least about these numbers
+print "Chance of carry without previous carry %f" % one_digit_carry
+print "Chance of carry with previous carry %f" % one_digit_carry_with_prev_carry
+
 
 p_memo = {} # avoid computing results we've already computed
 def P(n):
@@ -46,34 +48,3 @@ def P(n):
         res = one_digit_carry + one_digit_carry_with_prev_carry*P(n-1)
         p_memo[n] = res
         return res
-
-def experiment(n):
-    # generate all n digit numbers
-    ns = itertools.product([str(x) for x in range(0,10)], repeat=n)
-    ns_numbers = []
-    for num_lst in ns:
-        number = 0
-        for i, el in enumerate(num_lst):
-            number += int(el)*(10**(i))
-        if ( len(str(number)) == n ):
-            ns_numbers.append(number)
-
-    # count number of sums that create a carry
-    sums_iter = itertools.product(ns_numbers, repeat=2)
-    sums = 0
-    carries = 0
-    for el in sums_iter:
-        number = el[1] + el[0]
-        if (number >= 10**n):
-            carries += 1
-        sums += 1
-
-    return Decimal(carries) / Decimal(sums)
-
-def experiment_wrapper(n):
-    print "%d\t%0.*f" % (n, precision, experiment(n))
-    sys.stdout.flush()
-
-if __name__ == "__main__":
-    pool = Pool(processes=8)
-    pool.map(experiment_wrapper, range(1,53))
