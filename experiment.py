@@ -1,8 +1,6 @@
 import sys
-from multiprocessing import Pool
 import itertools
 from decimal import *
-
 
 def experiment(n):
     # generate all n digit numbers
@@ -31,11 +29,3 @@ def experiment(n):
             sums += 1
 
     return Decimal(carries) / Decimal(sums)
-
-def experiment_wrapper(n):
-    print "%d\t%0.*f" % (n, precision, experiment(n))
-    sys.stdout.flush()
-
-if __name__ == "__main__":
-    pool = Pool(processes=8)
-    pool.map(experiment_wrapper, range(6,10))
